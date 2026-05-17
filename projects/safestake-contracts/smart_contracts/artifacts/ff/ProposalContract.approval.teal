@@ -1,0 +1,2200 @@
+#pragma version 10
+#pragma typetrack false
+
+// smart_contracts.ff.contract.ProposalContract.__algopy_entrypoint_with_init() -> uint64:
+main:
+    intcblock 1 0 2 56 288
+    bytecblock 0x0000000000000000 0x0000 0x00 "proposals" "noOfProposals" "noOfFutureFunds" 0x0002 "milestoneVotes_" "donations" "creatorStats_" "futureFund_"
+    txn ApplicationID
+    bnz main_after_if_else@2
+    // smart_contracts/ff/contract.py:61-62
+    // # Crowdfunding state
+    // self.no_of_proposals = GlobalState(UInt64(0), key="noOfProposals")
+    bytec 4 // "noOfProposals"
+    bytec_0 // 0x0000000000000000
+    app_global_put
+    // smart_contracts/ff/contract.py:67-68
+    // # Future self state
+    // self.no_of_future_funds = GlobalState(UInt64(0), key="noOfFutureFunds")
+    bytec 5 // "noOfFutureFunds"
+    bytec_0 // 0x0000000000000000
+    app_global_put
+
+main_after_if_else@2:
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txn NumAppArgs
+    bz main_bare_routing@13
+    pushbytess 0x6a501e58 0x876755d0 0x556f82c3 0x8c507f18 0x2794d963 0xe64059d1 0xe9128226 0x26695677 // method "create_proposal(string,string,string,string,uint64,(string,uint64)[],pay)void", method "donate_proposal(uint64,pay)void", method "submit_proof(uint64,string)void", method "vote_milestone(uint64,bool)void", method "claim_milestone(uint64)void", method "refund_if_inactive(uint64)void", method "fund_future_self(address,address,uint64,pay)void", method "claim_future_self(uint64)void"
+    txna ApplicationArgs 0
+    match main_create_proposal_route@5 main_donate_proposal_route@6 main_submit_proof_route@7 main_vote_milestone_route@8 main_claim_milestone_route@9 main_refund_if_inactive_route@10 main_fund_future_self_route@11 main_claim_future_self_route@12
+
+main_after_if_else@15:
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    intc_1 // 0
+    return
+
+main_claim_future_self_route@12:
+    // smart_contracts/ff/contract.py:315
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    // smart_contracts/ff/contract.py:315
+    // @abimethod()
+    callsub claim_future_self
+    intc_0 // 1
+    return
+
+main_fund_future_self_route@11:
+    // smart_contracts/ff/contract.py:291-292
+    // # ------------------ Future Self Methods ------------------
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    txna ApplicationArgs 3
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ff/contract.py:291-292
+    // # ------------------ Future Self Methods ------------------
+    // @abimethod()
+    callsub fund_future_self
+    intc_0 // 1
+    return
+
+main_refund_if_inactive_route@10:
+    // smart_contracts/ff/contract.py:267
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    // smart_contracts/ff/contract.py:267
+    // @abimethod()
+    callsub refund_if_inactive
+    intc_0 // 1
+    return
+
+main_claim_milestone_route@9:
+    // smart_contracts/ff/contract.py:235
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    // smart_contracts/ff/contract.py:235
+    // @abimethod()
+    callsub claim_milestone
+    intc_0 // 1
+    return
+
+main_vote_milestone_route@8:
+    // smart_contracts/ff/contract.py:202
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    // smart_contracts/ff/contract.py:202
+    // @abimethod()
+    callsub vote_milestone
+    intc_0 // 1
+    return
+
+main_submit_proof_route@7:
+    // smart_contracts/ff/contract.py:173
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    // smart_contracts/ff/contract.py:173
+    // @abimethod()
+    callsub submit_proof
+    intc_0 // 1
+    return
+
+main_donate_proposal_route@6:
+    // smart_contracts/ff/contract.py:151
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ff/contract.py:151
+    // @abimethod()
+    callsub donate_proposal
+    intc_0 // 1
+    return
+
+main_create_proposal_route@5:
+    // smart_contracts/ff/contract.py:75-76
+    // # ------------------ Crowdfunding Methods ------------------
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txna ApplicationArgs 1
+    txna ApplicationArgs 2
+    txna ApplicationArgs 3
+    txna ApplicationArgs 4
+    txna ApplicationArgs 5
+    txna ApplicationArgs 6
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ff/contract.py:75-76
+    // # ------------------ Crowdfunding Methods ------------------
+    // @abimethod()
+    callsub create_proposal
+    intc_0 // 1
+    return
+
+main_bare_routing@13:
+    // smart_contracts/ff/contract.py:58-59
+    // # ------------------ Contract ------------------
+    // class ProposalContract(ARC4Contract):
+    txn OnCompletion
+    bnz main_after_if_else@15
+    txn ApplicationID
+    !
+    assert // can only call when creating
+    intc_0 // 1
+    return
+
+
+// _puya_lib.arc4.dynamic_array_concat_dynamic_element(array_items_count: uint64, array_head_and_tail: bytes, new_items_count: uint64, new_head_and_tail: bytes) -> bytes:
+dynamic_array_concat_dynamic_element:
+    proto 4 1
+    pushbytes ""
+    dup
+    frame_dig -2
+    intc_2 // 2
+    *
+    frame_dig -4
+    intc_2 // 2
+    *
+    intc_1 // 0
+
+dynamic_array_concat_dynamic_element_for_header@1:
+    frame_dig 4
+    frame_dig 3
+    <
+    bz dynamic_array_concat_dynamic_element_after_for@4
+    frame_dig -3
+    frame_dig 4
+    dup
+    cover 2
+    extract_uint16
+    frame_dig 2
+    +
+    itob
+    extract 6 2
+    frame_dig 1
+    swap
+    concat
+    frame_bury 1
+    intc_2 // 2
+    +
+    frame_bury 4
+    b dynamic_array_concat_dynamic_element_for_header@1
+
+dynamic_array_concat_dynamic_element_after_for@4:
+    frame_dig -3
+    len
+    frame_bury 0
+    intc_1 // 0
+    frame_bury 4
+
+dynamic_array_concat_dynamic_element_for_header@5:
+    frame_dig 4
+    frame_dig 2
+    <
+    bz dynamic_array_concat_dynamic_element_after_for@8
+    frame_dig -1
+    frame_dig 4
+    dup
+    cover 2
+    extract_uint16
+    frame_dig 0
+    +
+    itob
+    extract 6 2
+    frame_dig 1
+    swap
+    concat
+    frame_bury 1
+    intc_2 // 2
+    +
+    frame_bury 4
+    b dynamic_array_concat_dynamic_element_for_header@5
+
+dynamic_array_concat_dynamic_element_after_for@8:
+    frame_dig -4
+    frame_dig -2
+    +
+    itob
+    extract 6 2
+    frame_dig 1
+    concat
+    frame_dig -3
+    frame_dig 3
+    frame_dig 0
+    substring3
+    concat
+    frame_dig -1
+    len
+    frame_dig -1
+    frame_dig 2
+    uncover 2
+    substring3
+    concat
+    frame_bury 0
+    retsub
+
+
+// _puya_lib.arc4.dynamic_array_replace_dynamic_element(source: bytes, new_item: bytes, index: uint64) -> bytes:
+dynamic_array_replace_dynamic_element:
+    proto 3 1
+    frame_dig -3
+    substring 0 2
+    dup
+    btoi
+    frame_dig -3
+    extract 2 0
+    frame_dig -1
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    frame_dig -1
+    intc_0 // 1
+    +
+    intc_2 // 2
+    *
+    dup
+    cover 4
+    dig 2
+    swap
+    extract_uint16
+    dig 2
+    len
+    dig 4
+    frame_dig -1
+    -
+    intc_0 // 1
+    -
+    dig 1
+    uncover 3
+    uncover 2
+    select
+    dup
+    dig 3
+    -
+    cover 5
+    frame_dig -2
+    len
+    cover 5
+    dig 3
+    intc_1 // 0
+    uncover 4
+    substring3
+    frame_dig -2
+    concat
+    uncover 3
+    uncover 2
+    uncover 3
+    substring3
+    concat
+    swap
+    intc_2 // 2
+    *
+
+dynamic_array_replace_dynamic_element_for_header@2:
+    frame_dig 1
+    frame_dig 5
+    <
+    bz dynamic_array_replace_dynamic_element_after_for@5
+    frame_dig 4
+    dup
+    frame_dig 1
+    dup
+    cover 3
+    extract_uint16
+    frame_dig 3
+    +
+    frame_dig 2
+    -
+    itob
+    extract 6 2
+    dig 2
+    swap
+    replace3
+    frame_bury 4
+    intc_2 // 2
+    +
+    frame_bury 1
+    b dynamic_array_replace_dynamic_element_for_header@2
+
+dynamic_array_replace_dynamic_element_after_for@5:
+    frame_dig 0
+    frame_dig 4
+    concat
+    frame_bury 0
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.create_proposal(name: bytes, title: bytes, description: bytes, category: bytes, amount_required: bytes, milestones: bytes, payment: uint64) -> void:
+create_proposal:
+    // smart_contracts/ff/contract.py:75-86
+    // # ------------------ Crowdfunding Methods ------------------
+    // @abimethod()
+    // def create_proposal(
+    //     self,
+    //     name: String,
+    //     title: String,
+    //     description: String,
+    //     category: String,
+    //     amount_required: UInt64,
+    //     milestones: DynamicArray[MilestoneInput],
+    //     payment: gtxn.PaymentTransaction
+    // ) -> None:
+    proto 7 0
+    // smart_contracts/ff/contract.py:87
+    // assert payment.amount == 2_000_000, "Must pay exactly 2 Algos to create a proposal"
+    frame_dig -1
+    gtxns Amount
+    pushint 2000000 // 2000000
+    ==
+    assert // Must pay exactly 2 Algos to create a proposal
+    // smart_contracts/ff/contract.py:88
+    // assert payment.receiver == Global.current_application_address, "Payment must be sent to the contract address"
+    frame_dig -1
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert // Payment must be sent to the contract address
+    // smart_contracts/ff/contract.py:89
+    // assert payment.sender == Txn.sender, "Payment must be from the proposal creator"
+    frame_dig -1
+    gtxns Sender
+    txn Sender
+    ==
+    assert // Payment must be from the proposal creator
+    // smart_contracts/ff/contract.py:91
+    // idx = self.no_of_proposals.value
+    intc_1 // 0
+    bytec 4 // "noOfProposals"
+    app_global_get_ex
+    assert // check self.no_of_proposals exists
+    // smart_contracts/ff/contract.py:92
+    // final_milestones = DynamicArray[Milestone]()
+    bytec_1 // 0x0000
+    // smart_contracts/ff/contract.py:93
+    // milestones_total = NativeUInt64(0)
+    intc_1 // 0
+    // smart_contracts/ff/contract.py:95
+    // for index in urange(milestones.length):
+    frame_dig -2
+    intc_1 // 0
+    extract_uint16
+    intc_1 // 0
+
+create_proposal_for_header@1:
+    // smart_contracts/ff/contract.py:95
+    // for index in urange(milestones.length):
+    frame_dig 4
+    frame_dig 3
+    <
+    bz create_proposal_after_for@4
+    // smart_contracts/ff/contract.py:96
+    // milestone = milestones[index].copy()
+    frame_dig -2
+    extract 2 0
+    frame_dig 4
+    dup
+    cover 2
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    uncover 2
+    intc_0 // 1
+    +
+    dup
+    frame_bury 4
+    frame_dig 3
+    dig 1
+    - // on error: Index access is out of bounds
+    dig 3
+    len
+    uncover 2
+    intc_2 // 2
+    *
+    dig 4
+    swap
+    extract_uint16
+    uncover 2
+    select
+    substring3
+    // smart_contracts/ff/contract.py:98
+    // name=milestone.name,
+    dup
+    intc_1 // 0
+    extract_uint16
+    dig 1
+    len
+    dig 2
+    cover 2
+    substring3
+    // smart_contracts/ff/contract.py:99
+    // amount=milestone.amount,
+    dig 1
+    extract 2 8 // on error: Index access is out of bounds
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    dig 1
+    len
+    pushint 53 // 53
+    +
+    pushbytes 0x0035
+    uncover 2
+    concat
+    swap
+    itob
+    extract 6 2
+    concat
+    // smart_contracts/ff/contract.py:101
+    // votes_for=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    // smart_contracts/ff/contract.py:102
+    // votes_against=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    // smart_contracts/ff/contract.py:103
+    // total_voters=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    // smart_contracts/ff/contract.py:104
+    // claimed=Bool(False),
+    bytec_2 // 0x00
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    // smart_contracts/ff/contract.py:105
+    // proof_submitted_time=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    // smart_contracts/ff/contract.py:106
+    // voting_end_time=UInt64(0)
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    swap
+    concat
+    // smart_contracts/ff/contract.py:100
+    // proof_link=String(""),
+    bytec_1 // 0x0000
+    // smart_contracts/ff/contract.py:97-107
+    // final_milestones.append(Milestone(
+    //     name=milestone.name,
+    //     amount=milestone.amount,
+    //     proof_link=String(""),
+    //     votes_for=UInt64(0),
+    //     votes_against=UInt64(0),
+    //     total_voters=UInt64(0),
+    //     claimed=Bool(False),
+    //     proof_submitted_time=UInt64(0),
+    //     voting_end_time=UInt64(0)
+    // ))
+    concat
+    bytec 6 // 0x0002
+    swap
+    concat
+    frame_dig 1
+    dup
+    intc_1 // 0
+    extract_uint16
+    swap
+    extract 2 0
+    intc_0 // 1
+    uncover 3
+    callsub dynamic_array_concat_dynamic_element
+    frame_bury 1
+    // smart_contracts/ff/contract.py:108
+    // milestones_total = milestones_total + milestone.amount.native
+    intc_2 // 2
+    extract_uint64
+    frame_dig 2
+    +
+    frame_bury 2
+    b create_proposal_for_header@1
+
+create_proposal_after_for@4:
+    // smart_contracts/ff/contract.py:110
+    // assert amount_required == milestones_total, "Total milestone amount must equal the required amount"
+    frame_dig 2
+    itob
+    frame_dig -3
+    b==
+    assert // Total milestone amount must equal the required amount
+    // smart_contracts/ff/contract.py:111
+    // assert amount_required > 0, "Amount required must be greater than 0"
+    frame_dig -3
+    bytec_0 // 0x0000000000000000
+    b>
+    assert // Amount required must be greater than 0
+    // smart_contracts/ff/contract.py:112
+    // assert final_milestones.length > 0, "At least one milestone is required"
+    frame_dig 1
+    dup
+    intc_1 // 0
+    extract_uint16
+    dup
+    assert // At least one milestone is required
+    // smart_contracts/ff/contract.py:113
+    // assert final_milestones.length <= 5, "Maximum of 5 milestones allowed"
+    pushint 5 // 5
+    <=
+    assert // Maximum of 5 milestones allowed
+    // smart_contracts/ff/contract.py:114
+    // assert name.native.bytes.length > 0, "Proposal name cannot be empty"
+    frame_dig -7
+    extract 2 0
+    len
+    assert // Proposal name cannot be empty
+    // smart_contracts/ff/contract.py:115
+    // assert title.native.bytes.length > 0, "Proposal title cannot be empty"
+    frame_dig -6
+    extract 2 0
+    len
+    assert // Proposal title cannot be empty
+    // smart_contracts/ff/contract.py:116
+    // assert description.native.bytes.length > 0, "Proposal description cannot be empty"
+    frame_dig -5
+    extract 2 0
+    len
+    assert // Proposal description cannot be empty
+    // smart_contracts/ff/contract.py:124
+    // created_by=Address(Txn.sender),
+    txn Sender
+    // smart_contracts/ff/contract.py:130
+    // created_at=UInt64(Global.latest_timestamp)
+    global LatestTimestamp
+    itob
+    // smart_contracts/ff/contract.py:118-131
+    // new_proposal = Proposal(
+    //     name=name,
+    //     title=title,
+    //     description=description,
+    //     category=category,
+    //     amount_required=amount_required,
+    //     created_by=Address(Txn.sender),
+    //     amount_raised=UInt64(0),
+    //     no_of_donations=UInt64(0),
+    //     no_of_unique_donors=UInt64(0),
+    //     milestones=final_milestones.copy(),
+    //     current_milestone=UInt64(0),
+    //     created_at=UInt64(Global.latest_timestamp)
+    // )
+    frame_dig -7
+    len
+    pushint 90 // 90
+    +
+    dup
+    itob
+    extract 6 2
+    pushbytes 0x005a
+    swap
+    concat
+    frame_dig -6
+    len
+    uncover 2
+    +
+    dup
+    itob
+    extract 6 2
+    uncover 2
+    swap
+    concat
+    frame_dig -5
+    len
+    uncover 2
+    +
+    dup
+    itob
+    extract 6 2
+    uncover 2
+    swap
+    concat
+    frame_dig -4
+    len
+    uncover 2
+    +
+    swap
+    frame_dig -3
+    concat
+    uncover 3
+    concat
+    // smart_contracts/ff/contract.py:125
+    // amount_raised=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:118-131
+    // new_proposal = Proposal(
+    //     name=name,
+    //     title=title,
+    //     description=description,
+    //     category=category,
+    //     amount_required=amount_required,
+    //     created_by=Address(Txn.sender),
+    //     amount_raised=UInt64(0),
+    //     no_of_donations=UInt64(0),
+    //     no_of_unique_donors=UInt64(0),
+    //     milestones=final_milestones.copy(),
+    //     current_milestone=UInt64(0),
+    //     created_at=UInt64(Global.latest_timestamp)
+    // )
+    concat
+    swap
+    itob
+    extract 6 2
+    concat
+    // smart_contracts/ff/contract.py:126
+    // no_of_donations=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:118-131
+    // new_proposal = Proposal(
+    //     name=name,
+    //     title=title,
+    //     description=description,
+    //     category=category,
+    //     amount_required=amount_required,
+    //     created_by=Address(Txn.sender),
+    //     amount_raised=UInt64(0),
+    //     no_of_donations=UInt64(0),
+    //     no_of_unique_donors=UInt64(0),
+    //     milestones=final_milestones.copy(),
+    //     current_milestone=UInt64(0),
+    //     created_at=UInt64(Global.latest_timestamp)
+    // )
+    concat
+    // smart_contracts/ff/contract.py:127
+    // no_of_unique_donors=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:118-131
+    // new_proposal = Proposal(
+    //     name=name,
+    //     title=title,
+    //     description=description,
+    //     category=category,
+    //     amount_required=amount_required,
+    //     created_by=Address(Txn.sender),
+    //     amount_raised=UInt64(0),
+    //     no_of_donations=UInt64(0),
+    //     no_of_unique_donors=UInt64(0),
+    //     milestones=final_milestones.copy(),
+    //     current_milestone=UInt64(0),
+    //     created_at=UInt64(Global.latest_timestamp)
+    // )
+    concat
+    // smart_contracts/ff/contract.py:129
+    // current_milestone=UInt64(0),
+    bytec_0 // 0x0000000000000000
+    // smart_contracts/ff/contract.py:118-131
+    // new_proposal = Proposal(
+    //     name=name,
+    //     title=title,
+    //     description=description,
+    //     category=category,
+    //     amount_required=amount_required,
+    //     created_by=Address(Txn.sender),
+    //     amount_raised=UInt64(0),
+    //     no_of_donations=UInt64(0),
+    //     no_of_unique_donors=UInt64(0),
+    //     milestones=final_milestones.copy(),
+    //     current_milestone=UInt64(0),
+    //     created_at=UInt64(Global.latest_timestamp)
+    // )
+    concat
+    swap
+    concat
+    frame_dig -7
+    concat
+    frame_dig -6
+    concat
+    frame_dig -5
+    concat
+    frame_dig -4
+    concat
+    swap
+    concat
+    // smart_contracts/ff/contract.py:133
+    // self.proposals[idx] = new_proposal.copy()
+    bytec_3 // "proposals"
+    frame_dig 0
+    dup
+    cover 3
+    concat
+    dup
+    box_del
+    pop
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:134
+    // self.milestoneVotes[idx] = DynamicArray[Address]()
+    bytec 7 // "milestoneVotes_"
+    swap
+    concat
+    dup
+    box_del
+    pop
+    bytec_1 // 0x0000
+    box_put
+    // smart_contracts/ff/contract.py:135
+    // self.no_of_proposals.value = UInt64(self.no_of_proposals.value.native + 1)
+    intc_1 // 0
+    bytec 4 // "noOfProposals"
+    app_global_get_ex
+    assert // check self.no_of_proposals exists
+    btoi
+    intc_0 // 1
+    +
+    itob
+    bytec 4 // "noOfProposals"
+    swap
+    app_global_put
+    // smart_contracts/ff/contract.py:139
+    // if creator_addr in self.creator_stats:
+    bytec 9 // "creatorStats_"
+    // smart_contracts/ff/contract.py:137-138
+    // # Update Creator Stats
+    // creator_addr = Address(Txn.sender)
+    txn Sender
+    // smart_contracts/ff/contract.py:139
+    // if creator_addr in self.creator_stats:
+    concat
+    dup
+    box_len
+    bury 1
+    bz create_proposal_else_body@6
+    // smart_contracts/ff/contract.py:140
+    // stats = self.creator_stats[creator_addr].copy()
+    dup
+    box_get
+    assert // check self.creator_stats entry exists
+    // smart_contracts/ff/contract.py:141
+    // stats.projects_created = UInt64(stats.projects_created.native + 1)
+    dup
+    intc_1 // 0
+    extract_uint64
+    intc_0 // 1
+    +
+    itob
+    replace2 0
+    // smart_contracts/ff/contract.py:142
+    // self.creator_stats[creator_addr] = stats.copy()
+    box_put
+    retsub
+
+create_proposal_else_body@6:
+    // smart_contracts/ff/contract.py:144-148
+    // self.creator_stats[creator_addr] = CreatorStats(
+    //     projects_created=UInt64(1),
+    //     milestones_claimed=UInt64(0),
+    //     total_funds_raised=UInt64(0)
+    // )
+    pushbytes 0x000000000000000100000000000000000000000000000000
+    box_put
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.donate_proposal(proposal_id: bytes, payment: uint64) -> void:
+donate_proposal:
+    // smart_contracts/ff/contract.py:151-152
+    // @abimethod()
+    // def donate_proposal(self, proposal_id: UInt64, payment: gtxn.PaymentTransaction) -> None:
+    proto 2 0
+    // smart_contracts/ff/contract.py:153
+    // assert proposal_id in self.proposals, "Proposal doesn't exist"
+    bytec_3 // "proposals"
+    frame_dig -2
+    concat
+    dupn 2
+    box_len
+    bury 1
+    assert // Proposal doesn't exist
+    // smart_contracts/ff/contract.py:154
+    // prop = self.proposals[proposal_id].copy()
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.proposals entry exists
+    // smart_contracts/ff/contract.py:155
+    // assert prop.amount_raised < prop.amount_required, "Goal already reached"
+    dup
+    extract 48 8 // on error: Index access is out of bounds
+    swap
+    extract 8 8 // on error: Index access is out of bounds
+    b<
+    assert // Goal already reached
+    // smart_contracts/ff/contract.py:157
+    // amount = payment.amount
+    frame_dig -1
+    gtxns Amount
+    // smart_contracts/ff/contract.py:158
+    // donor = payment.sender
+    frame_dig -1
+    gtxns Sender
+    // smart_contracts/ff/contract.py:159
+    // donation_box_key = DonationBoxKey(proposal_id=proposal_id, donor=Address(donor))
+    frame_dig -2
+    swap
+    concat
+    // smart_contracts/ff/contract.py:160
+    // assert payment.receiver == Global.current_application_address, "Payment must be sent to the contract address"
+    frame_dig -1
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert // Payment must be sent to the contract address
+    // smart_contracts/ff/contract.py:162
+    // if donation_box_key not in self.donations:
+    bytec 8 // "donations"
+    swap
+    concat
+    dup
+    box_len
+    bury 1
+    bnz donate_proposal_else_body@2
+    // smart_contracts/ff/contract.py:163
+    // prop.no_of_unique_donors = UInt64(prop.no_of_unique_donors.native + 1)
+    frame_dig 1
+    dup
+    pushint 66 // 66
+    extract_uint64
+    intc_0 // 1
+    +
+    itob
+    replace2 66
+    frame_bury 1
+    // smart_contracts/ff/contract.py:164
+    // self.donations[donation_box_key] = UInt64(amount)
+    frame_dig 2
+    itob
+    box_put
+
+donate_proposal_after_if_else@3:
+    // smart_contracts/ff/contract.py:168
+    // prop.no_of_donations = UInt64(prop.no_of_donations.native + 1)
+    frame_dig 1
+    dup
+    pushint 58 // 58
+    extract_uint64
+    intc_0 // 1
+    +
+    itob
+    replace2 58
+    // smart_contracts/ff/contract.py:169
+    // prop.amount_raised = UInt64(prop.amount_raised.native + amount)
+    dup
+    pushint 48 // 48
+    extract_uint64
+    frame_dig 2
+    +
+    itob
+    replace2 48
+    // smart_contracts/ff/contract.py:170
+    // self.proposals[proposal_id] = prop.copy()
+    frame_dig 0
+    dup
+    box_del
+    pop
+    swap
+    box_put
+    retsub
+
+donate_proposal_else_body@2:
+    // smart_contracts/ff/contract.py:166
+    // self.donations[donation_box_key] = UInt64(self.donations[donation_box_key].native + amount)
+    dup
+    box_get
+    assert // check self.donations entry exists
+    btoi
+    frame_dig 2
+    +
+    itob
+    box_put
+    b donate_proposal_after_if_else@3
+
+
+// smart_contracts.ff.contract.ProposalContract.submit_proof(proposal_id: bytes, proof_link: bytes) -> void:
+submit_proof:
+    // smart_contracts/ff/contract.py:173-174
+    // @abimethod()
+    // def submit_proof(self, proposal_id: UInt64, proof_link: String) -> None:
+    proto 2 0
+    pushbytes ""
+    // smart_contracts/ff/contract.py:175
+    // assert proposal_id in self.proposals, "Proposal doesn't exist"
+    bytec_3 // "proposals"
+    frame_dig -2
+    concat
+    dupn 2
+    box_len
+    bury 1
+    assert // Proposal doesn't exist
+    // smart_contracts/ff/contract.py:176
+    // prop = self.proposals[proposal_id].copy()
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.proposals entry exists
+    // smart_contracts/ff/contract.py:177
+    // assert prop.created_by == Address(Txn.sender), "Only creator can submit proof"
+    dup
+    extract 16 32 // on error: Index access is out of bounds
+    txn Sender
+    ==
+    assert // Only creator can submit proof
+    // smart_contracts/ff/contract.py:178
+    // assert prop.amount_raised >= prop.amount_required, "Goal not reached yet"
+    dup
+    extract 48 8 // on error: Index access is out of bounds
+    dig 1
+    extract 8 8 // on error: Index access is out of bounds
+    b>=
+    assert // Goal not reached yet
+    // smart_contracts/ff/contract.py:179
+    // assert prop.current_milestone.native < prop.milestones.length, "All milestones already completed"
+    dup
+    pushint 74 // 74
+    extract_uint64
+    dup
+    uncover 2
+    dup
+    intc_3 // 56
+    extract_uint16
+    dup
+    cover 2
+    cover 3
+    dup
+    len
+    swap
+    cover 2
+    substring3
+    dup
+    cover 2
+    intc_1 // 0
+    extract_uint16
+    dup
+    cover 2
+    <
+    assert // All milestones already completed
+    // smart_contracts/ff/contract.py:181
+    // current_time = Global.latest_timestamp
+    global LatestTimestamp
+    // smart_contracts/ff/contract.py:182
+    // new_milestones = DynamicArray[Milestone]()
+    bytec_1 // 0x0000
+    // smart_contracts/ff/contract.py:183
+    // for idx in urange(prop.milestones.length):
+    intc_1 // 0
+
+submit_proof_for_header@1:
+    // smart_contracts/ff/contract.py:183
+    // for idx in urange(prop.milestones.length):
+    frame_dig 9
+    frame_dig 6
+    <
+    bz submit_proof_after_for@7
+    // smart_contracts/ff/contract.py:184
+    // milestone = prop.milestones[idx].copy()
+    frame_dig 5
+    extract 2 0
+    frame_dig 9
+    dup
+    cover 2
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    dig 2
+    intc_0 // 1
+    +
+    dup
+    frame_bury 0
+    frame_dig 6
+    dig 1
+    - // on error: Index access is out of bounds
+    dig 3
+    len
+    uncover 2
+    intc_2 // 2
+    *
+    dig 4
+    swap
+    extract_uint16
+    uncover 2
+    select
+    substring3
+    swap
+    // smart_contracts/ff/contract.py:185
+    // if idx == prop.current_milestone.native:
+    frame_dig 3
+    ==
+    bz submit_proof_else_body@4
+    // smart_contracts/ff/contract.py:186
+    // milestone.proof_link = proof_link
+    dup
+    pushint 10 // 10
+    extract_uint16
+    intc_1 // 0
+    swap
+    extract3
+    frame_dig -1
+    concat
+    // smart_contracts/ff/contract.py:187
+    // milestone.proof_submitted_time = UInt64(current_time)
+    frame_dig 7
+    dup
+    cover 2
+    itob
+    replace2 37
+    // smart_contracts/ff/contract.py:188
+    // milestone.voting_end_time = UInt64(current_time + voting_time)
+    swap
+    pushint 600 // 600
+    +
+    itob
+    replace2 45
+    // smart_contracts/ff/contract.py:189
+    // milestone.claimed = Bool(False)
+    intc 4 // 288
+    intc_1 // 0
+    setbit
+    // smart_contracts/ff/contract.py:190
+    // milestone.votes_for = UInt64(0)
+    bytec_0 // 0x0000000000000000
+    replace2 12
+    // smart_contracts/ff/contract.py:191
+    // milestone.votes_against = UInt64(0)
+    bytec_0 // 0x0000000000000000
+    replace2 20
+    // smart_contracts/ff/contract.py:192
+    // milestone.total_voters = UInt64(0)
+    bytec_0 // 0x0000000000000000
+    replace2 28
+    // smart_contracts/ff/contract.py:193
+    // new_milestones.append(milestone.copy())
+    bytec 6 // 0x0002
+    swap
+    concat
+    frame_dig 8
+    dup
+    intc_1 // 0
+    extract_uint16
+    swap
+    extract 2 0
+    intc_0 // 1
+    uncover 3
+    callsub dynamic_array_concat_dynamic_element
+    frame_bury 8
+
+submit_proof_after_if_else@5:
+    frame_dig 0
+    frame_bury 9
+    b submit_proof_for_header@1
+
+submit_proof_else_body@4:
+    // smart_contracts/ff/contract.py:195
+    // new_milestones.append(milestone.copy())
+    bytec 6 // 0x0002
+    swap
+    concat
+    frame_dig 8
+    dup
+    intc_1 // 0
+    extract_uint16
+    swap
+    extract 2 0
+    intc_0 // 1
+    uncover 3
+    callsub dynamic_array_concat_dynamic_element
+    frame_bury 8
+    b submit_proof_after_if_else@5
+
+submit_proof_after_for@7:
+    // smart_contracts/ff/contract.py:197
+    // prop.milestones = new_milestones.copy()
+    frame_dig 2
+    intc_1 // 0
+    frame_dig 4
+    extract3
+    frame_dig 8
+    concat
+    // smart_contracts/ff/contract.py:198
+    // self.proposals[proposal_id] = prop.copy()
+    frame_dig 1
+    dup
+    box_del
+    pop
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:199
+    // self.milestoneVotes[proposal_id] = DynamicArray[Address]()
+    bytec 7 // "milestoneVotes_"
+    frame_dig -2
+    concat
+    dup
+    box_del
+    pop
+    bytec_1 // 0x0000
+    box_put
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.vote_milestone(proposal_id: bytes, vote: bytes) -> void:
+vote_milestone:
+    // smart_contracts/ff/contract.py:202-203
+    // @abimethod()
+    // def vote_milestone(self, proposal_id: UInt64, vote: Bool) -> None:
+    proto 2 0
+    // smart_contracts/ff/contract.py:204
+    // assert proposal_id in self.proposals, "Proposal doesn't exist"
+    bytec_3 // "proposals"
+    frame_dig -2
+    concat
+    dupn 2
+    box_len
+    bury 1
+    assert // Proposal doesn't exist
+    // smart_contracts/ff/contract.py:205
+    // prop = self.proposals[proposal_id].copy()
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.proposals entry exists
+    // smart_contracts/ff/contract.py:206
+    // milestone = prop.milestones[prop.current_milestone.native].copy()
+    dup
+    pushint 74 // 74
+    extract_uint64
+    dup
+    uncover 2
+    dup
+    intc_3 // 56
+    extract_uint16
+    dig 1
+    len
+    substring3
+    dup
+    extract 2 0
+    dig 2
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    uncover 2
+    intc_1 // 0
+    extract_uint16
+    uncover 3
+    intc_0 // 1
+    +
+    swap
+    dig 1
+    - // on error: Index access is out of bounds
+    dig 3
+    len
+    uncover 2
+    intc_2 // 2
+    *
+    dig 4
+    swap
+    extract_uint16
+    uncover 2
+    select
+    substring3
+    // smart_contracts/ff/contract.py:208
+    // milestone_votes = self.milestoneVotes[proposal_id].copy()
+    bytec 7 // "milestoneVotes_"
+    frame_dig -2
+    concat
+    dup
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.milestoneVotes entry exists
+    // smart_contracts/ff/contract.py:209
+    // for addr in milestone_votes:
+    intc_1 // 0
+    extract_uint16
+    intc_1 // 0
+
+vote_milestone_for_header@1:
+    // smart_contracts/ff/contract.py:209
+    // for addr in milestone_votes:
+    frame_dig 7
+    frame_dig 6
+    <
+    bz vote_milestone_after_for@4
+    frame_dig 5
+    extract 2 0
+    frame_dig 7
+    dup
+    cover 2
+    pushint 32 // 32
+    *
+    pushint 32 // 32
+    extract3 // on error: Index access is out of bounds
+    // smart_contracts/ff/contract.py:210
+    // assert addr.native != Txn.sender, "You have already voted for this milestone"
+    txn Sender
+    !=
+    assert // You have already voted for this milestone
+    intc_0 // 1
+    +
+    frame_bury 7
+    b vote_milestone_for_header@1
+
+vote_milestone_after_for@4:
+    // smart_contracts/ff/contract.py:212
+    // assert prop.created_by.native != Txn.sender, "Creator cannot vote"
+    frame_dig 1
+    extract 16 32 // on error: Index access is out of bounds
+    txn Sender
+    !=
+    assert // Creator cannot vote
+    // smart_contracts/ff/contract.py:213
+    // assert milestone.proof_link != "", "Proof is not submitted yet"
+    frame_dig 3
+    dup
+    pushint 10 // 10
+    extract_uint16
+    dig 1
+    len
+    dig 2
+    cover 2
+    substring3
+    bytec_1 // 0x0000
+    !=
+    assert // Proof is not submitted yet
+    // smart_contracts/ff/contract.py:215
+    // current_time = Global.latest_timestamp
+    global LatestTimestamp
+    // smart_contracts/ff/contract.py:216
+    // assert milestone.voting_end_time.native > current_time, "Voting period has ended"
+    swap
+    pushint 45 // 45
+    extract_uint64
+    <
+    assert // Voting period has ended
+    // smart_contracts/ff/contract.py:218
+    // donator_box_key = DonationBoxKey(proposal_id=proposal_id, donor=Address(Txn.sender))
+    frame_dig -2
+    txn Sender
+    concat
+    // smart_contracts/ff/contract.py:219
+    // assert donator_box_key in self.donations, "You have not donated to this proposal"
+    bytec 8 // "donations"
+    swap
+    concat
+    dup
+    box_len
+    bury 1
+    assert // You have not donated to this proposal
+    // smart_contracts/ff/contract.py:220
+    // amount_donated = self.donations[donator_box_key]
+    box_get
+    assert // check self.donations entry exists
+    // smart_contracts/ff/contract.py:221
+    // assert amount_donated >= 1_000_000, "Should have donated more than 1 Algo to vote"
+    dup
+    pushbytes 0x00000000000f4240
+    b>=
+    assert // Should have donated more than 1 Algo to vote
+    // smart_contracts/ff/contract.py:223
+    // weight = op.sqrt(amount_donated.native // NativeUInt64(1_000_000))
+    btoi
+    pushint 1000000 // 1000000
+    /
+    sqrt
+    // smart_contracts/ff/contract.py:224
+    // if vote:
+    frame_dig -1
+    bytec_2 // 0x00
+    !=
+    bz vote_milestone_else_body@6
+    // smart_contracts/ff/contract.py:225
+    // milestone.votes_for = UInt64(milestone.votes_for.native + weight)
+    frame_dig 3
+    dup
+    pushint 12 // 12
+    extract_uint64
+    uncover 2
+    +
+    itob
+    replace2 12
+    frame_bury 3
+
+vote_milestone_after_if_else@7:
+    // smart_contracts/ff/contract.py:229
+    // milestone.total_voters = UInt64(milestone.total_voters.native + 1)
+    frame_dig 3
+    dup
+    pushint 28 // 28
+    extract_uint64
+    intc_0 // 1
+    +
+    itob
+    replace2 28
+    // smart_contracts/ff/contract.py:230
+    // milestone_votes.append(Address(Txn.sender))
+    frame_dig 5
+    extract 2 0
+    txn Sender
+    concat
+    dup
+    len
+    pushint 32 // 32
+    /
+    itob
+    extract 6 2
+    swap
+    concat
+    // smart_contracts/ff/contract.py:231
+    // self.milestoneVotes[proposal_id] = milestone_votes.copy()
+    frame_dig 4
+    dup
+    box_del
+    pop
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:232
+    // self.proposals[proposal_id].milestones[prop.current_milestone.native] = milestone.copy()
+    frame_dig 0
+    dup
+    box_get
+    assert // check self.proposals entry exists
+    dup
+    intc_3 // 56
+    extract_uint16
+    dig 1
+    len
+    dig 2
+    dig 2
+    uncover 2
+    substring3
+    uncover 4
+    frame_dig 2
+    callsub dynamic_array_replace_dynamic_element
+    uncover 2
+    intc_1 // 0
+    uncover 3
+    extract3
+    swap
+    concat
+    dig 1
+    box_del
+    pop
+    box_put
+    retsub
+
+vote_milestone_else_body@6:
+    // smart_contracts/ff/contract.py:227
+    // milestone.votes_against = UInt64(milestone.votes_against.native + weight)
+    frame_dig 3
+    dup
+    pushint 20 // 20
+    extract_uint64
+    uncover 2
+    +
+    itob
+    replace2 20
+    frame_bury 3
+    b vote_milestone_after_if_else@7
+
+
+// smart_contracts.ff.contract.ProposalContract.claim_milestone(proposal_id: bytes) -> void:
+claim_milestone:
+    // smart_contracts/ff/contract.py:235-236
+    // @abimethod()
+    // def claim_milestone(self, proposal_id: UInt64) -> None:
+    proto 1 0
+    // smart_contracts/ff/contract.py:237
+    // assert proposal_id in self.proposals, "Proposal doesn't exist"
+    bytec_3 // "proposals"
+    frame_dig -1
+    concat
+    dup
+    box_len
+    bury 1
+    assert // Proposal doesn't exist
+    // smart_contracts/ff/contract.py:238
+    // prop = self.proposals[proposal_id].copy()
+    dup
+    box_get
+    assert // check self.proposals entry exists
+    // smart_contracts/ff/contract.py:239
+    // milestone = prop.milestones[prop.current_milestone.native].copy()
+    dup
+    pushint 74 // 74
+    extract_uint64
+    dig 1
+    intc_3 // 56
+    extract_uint16
+    dig 2
+    len
+    dig 3
+    cover 2
+    substring3
+    dup
+    extract 2 0
+    dig 2
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    uncover 2
+    intc_1 // 0
+    extract_uint16
+    dig 3
+    intc_0 // 1
+    +
+    swap
+    dig 1
+    - // on error: Index access is out of bounds
+    dig 3
+    len
+    dig 2
+    intc_2 // 2
+    *
+    dig 5
+    swap
+    extract_uint16
+    uncover 2
+    select
+    uncover 3
+    uncover 3
+    uncover 2
+    substring3
+    // smart_contracts/ff/contract.py:241
+    // current_time = Global.latest_timestamp
+    global LatestTimestamp
+    // smart_contracts/ff/contract.py:242
+    // assert milestone.proof_link != "", "Proof is not submitted yet"
+    dig 1
+    pushint 10 // 10
+    extract_uint16
+    dig 2
+    len
+    dig 3
+    cover 2
+    substring3
+    bytec_1 // 0x0000
+    !=
+    assert // Proof is not submitted yet
+    // smart_contracts/ff/contract.py:243
+    // assert milestone.proof_submitted_time.native != 0, "Proof not submitted yet"
+    dig 1
+    pushint 37 // 37
+    extract_uint64
+    assert // Proof not submitted yet
+    // smart_contracts/ff/contract.py:244
+    // assert current_time > milestone.voting_end_time.native, "Voting period not ended yet"
+    dig 1
+    pushint 45 // 45
+    extract_uint64
+    >
+    assert // Voting period not ended yet
+    // smart_contracts/ff/contract.py:245
+    // assert milestone.votes_for.native > milestone.votes_against.native, "Milestone not approved"
+    dup
+    pushint 12 // 12
+    extract_uint64
+    dig 1
+    pushint 20 // 20
+    extract_uint64
+    >
+    assert // Milestone not approved
+    // smart_contracts/ff/contract.py:246
+    // assert not milestone.claimed, "Milestone already claimed"
+    dup
+    intc 4 // 288
+    getbit
+    bytec_2 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_2 // 0x00
+    ==
+    assert // Milestone already claimed
+    // smart_contracts/ff/contract.py:248
+    // creator = prop.created_by.native
+    uncover 3
+    extract 16 32 // on error: Index access is out of bounds
+    // smart_contracts/ff/contract.py:249-253
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=creator,
+    //     amount=milestone.amount.native
+    // ).submit()
+    itxn_begin
+    // smart_contracts/ff/contract.py:250
+    // sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/ff/contract.py:252
+    // amount=milestone.amount.native
+    dig 2
+    intc_2 // 2
+    extract_uint64
+    itxn_field Amount
+    dig 1
+    itxn_field Receiver
+    itxn_field Sender
+    // smart_contracts/ff/contract.py:249
+    // itxn.Payment(
+    intc_0 // pay
+    itxn_field TypeEnum
+    intc_1 // 0
+    itxn_field Fee
+    // smart_contracts/ff/contract.py:249-253
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=creator,
+    //     amount=milestone.amount.native
+    // ).submit()
+    itxn_submit
+    // smart_contracts/ff/contract.py:255
+    // milestone.claimed = Bool(True)
+    swap
+    intc 4 // 288
+    intc_0 // 1
+    setbit
+    dup
+    cover 5
+    // smart_contracts/ff/contract.py:256
+    // self.proposals[proposal_id].milestones[prop.current_milestone.native] = milestone.copy()
+    dig 4
+    box_get
+    assert // check self.proposals entry exists
+    dup
+    intc_3 // 56
+    extract_uint16
+    dig 1
+    len
+    dig 2
+    dig 2
+    uncover 2
+    substring3
+    uncover 3
+    uncover 6
+    callsub dynamic_array_replace_dynamic_element
+    uncover 2
+    intc_1 // 0
+    uncover 3
+    extract3
+    swap
+    concat
+    dig 3
+    box_del
+    pop
+    dig 3
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:257
+    // self.proposals[proposal_id].current_milestone = UInt64(prop.current_milestone.native + 1)
+    swap
+    itob
+    dig 2
+    box_get
+    assert // check self.proposals entry exists
+    swap
+    replace2 74
+    dig 2
+    box_del
+    pop
+    uncover 2
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:259-260
+    // # Update Creator Reputation Stats
+    // if prop.created_by in self.creator_stats:
+    bytec 9 // "creatorStats_"
+    swap
+    concat
+    dup
+    box_len
+    bury 1
+    bz claim_milestone_after_if_else@3
+    // smart_contracts/ff/contract.py:261
+    // stats = self.creator_stats[prop.created_by].copy()
+    frame_dig 1
+    dup
+    box_get
+    assert // check self.creator_stats entry exists
+    // smart_contracts/ff/contract.py:262
+    // stats.milestones_claimed = UInt64(stats.milestones_claimed.native + 1)
+    dup
+    pushint 8 // 8
+    extract_uint64
+    intc_0 // 1
+    +
+    itob
+    replace2 8
+    // smart_contracts/ff/contract.py:263
+    // stats.total_funds_raised = UInt64(stats.total_funds_raised.native + milestone.amount.native)
+    dup
+    pushint 16 // 16
+    extract_uint64
+    frame_dig 0
+    intc_2 // 2
+    extract_uint64
+    +
+    itob
+    replace2 16
+    // smart_contracts/ff/contract.py:264
+    // self.creator_stats[prop.created_by] = stats.copy()
+    box_put
+
+claim_milestone_after_if_else@3:
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.refund_if_inactive(proposal_id: bytes) -> void:
+refund_if_inactive:
+    // smart_contracts/ff/contract.py:267-268
+    // @abimethod()
+    // def refund_if_inactive(self, proposal_id: UInt64) -> None:
+    proto 1 0
+    pushbytes ""
+    dup
+    // smart_contracts/ff/contract.py:269
+    // assert proposal_id in self.proposals, "Proposal doesn't exist"
+    bytec_3 // "proposals"
+    frame_dig -1
+    concat
+    dup
+    box_len
+    bury 1
+    assert // Proposal doesn't exist
+    // smart_contracts/ff/contract.py:270
+    // prop = self.proposals[proposal_id].copy()
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.proposals entry exists
+    // smart_contracts/ff/contract.py:271
+    // current_milestone = prop.milestones[prop.current_milestone.native].copy()
+    dup
+    pushint 74 // 74
+    extract_uint64
+    dig 1
+    intc_3 // 56
+    extract_uint16
+    dig 2
+    len
+    uncover 3
+    cover 2
+    substring3
+    dup
+    extract 2 0
+    dig 2
+    intc_2 // 2
+    *
+    dig 1
+    swap
+    extract_uint16
+    uncover 2
+    intc_1 // 0
+    extract_uint16
+    uncover 3
+    intc_0 // 1
+    +
+    swap
+    dig 1
+    - // on error: Index access is out of bounds
+    dig 3
+    len
+    uncover 2
+    intc_2 // 2
+    *
+    dig 4
+    swap
+    extract_uint16
+    uncover 2
+    select
+    substring3
+    // smart_contracts/ff/contract.py:272
+    // current_time = Global.latest_timestamp
+    global LatestTimestamp
+    // smart_contracts/ff/contract.py:273
+    // time_difference = current_time - current_milestone.proof_submitted_time.native
+    swap
+    pushint 37 // 37
+    extract_uint64
+    -
+    // smart_contracts/ff/contract.py:275
+    // donator_box_key = DonationBoxKey(proposal_id=proposal_id, donor=Address(Txn.sender))
+    frame_dig -1
+    txn Sender
+    concat
+    // smart_contracts/ff/contract.py:276
+    // assert donator_box_key in self.donations, "You have not donated to this proposal"
+    bytec 8 // "donations"
+    swap
+    concat
+    dup
+    cover 2
+    dup
+    box_len
+    bury 1
+    assert // You have not donated to this proposal
+    // smart_contracts/ff/contract.py:277
+    // amount_donated = self.donations[donator_box_key]
+    box_get
+    swap
+    cover 2
+    assert // check self.donations entry exists
+    // smart_contracts/ff/contract.py:279
+    // if time_difference > expiration_time:
+    pushint 1200 // 1200
+    >
+    bz refund_if_inactive_after_if_else@5
+    // smart_contracts/ff/contract.py:280
+    // remaining_amount = prop.amount_required.native - prop.amount_raised.native
+    frame_dig 2
+    dup
+    pushint 8 // 8
+    extract_uint64
+    swap
+    pushint 48 // 48
+    extract_uint64
+    dup
+    frame_bury 1
+    -
+    frame_bury 0
+    // smart_contracts/ff/contract.py:281
+    // if amount_donated > 0:
+    frame_dig 4
+    bytec_0 // 0x0000000000000000
+    b>
+    bz refund_if_inactive_after_if_else@5
+    // smart_contracts/ff/contract.py:282
+    // refund_amount = UInt64(remaining_amount * amount_donated.native // prop.amount_raised.native)
+    frame_dig 4
+    btoi
+    frame_dig 0
+    *
+    frame_dig 1
+    /
+    itob
+    // smart_contracts/ff/contract.py:283-287
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=Txn.sender,
+    //     amount=refund_amount.native
+    // ).submit()
+    itxn_begin
+    // smart_contracts/ff/contract.py:284
+    // sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/ff/contract.py:285
+    // receiver=Txn.sender,
+    txn Sender
+    // smart_contracts/ff/contract.py:286
+    // amount=refund_amount.native
+    uncover 2
+    btoi
+    itxn_field Amount
+    itxn_field Receiver
+    itxn_field Sender
+    // smart_contracts/ff/contract.py:283
+    // itxn.Payment(
+    intc_0 // pay
+    itxn_field TypeEnum
+    intc_1 // 0
+    itxn_field Fee
+    // smart_contracts/ff/contract.py:283-287
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=Txn.sender,
+    //     amount=refund_amount.native
+    // ).submit()
+    itxn_submit
+    // smart_contracts/ff/contract.py:288
+    // self.donations[donator_box_key] = UInt64(0)
+    frame_dig 3
+    bytec_0 // 0x0000000000000000
+    box_put
+
+refund_if_inactive_after_if_else@5:
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.fund_future_self(primary: bytes, backup: bytes, unlock_time: bytes, payment: uint64) -> void:
+fund_future_self:
+    // smart_contracts/ff/contract.py:291-299
+    // # ------------------ Future Self Methods ------------------
+    // @abimethod()
+    // def fund_future_self(
+    //     self,
+    //     primary: Address,
+    //     backup: Address,
+    //     unlock_time: UInt64,
+    //     payment: gtxn.PaymentTransaction
+    // ) -> None:
+    proto 4 0
+    // smart_contracts/ff/contract.py:300
+    // assert payment.receiver == Global.current_application_address, "Payment must go to contract"
+    frame_dig -1
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert // Payment must go to contract
+    // smart_contracts/ff/contract.py:301
+    // assert payment.amount > 0, "Must fund with positive amount"
+    frame_dig -1
+    gtxns Amount
+    dup
+    assert // Must fund with positive amount
+    // smart_contracts/ff/contract.py:302
+    // assert payment.sender == Txn.sender, "Funding must be from caller"
+    frame_dig -1
+    gtxns Sender
+    txn Sender
+    ==
+    assert // Funding must be from caller
+    // smart_contracts/ff/contract.py:304
+    // idx = self.no_of_future_funds.value
+    intc_1 // 0
+    bytec 5 // "noOfFutureFunds"
+    app_global_get_ex
+    assert // check self.no_of_future_funds exists
+    // smart_contracts/ff/contract.py:309
+    // amount=UInt64(payment.amount),
+    swap
+    itob
+    // smart_contracts/ff/contract.py:305-311
+    // self.futureFunds[idx] = FutureFund(
+    //     primary=primary,
+    //     backup=backup,
+    //     unlock_time=unlock_time,
+    //     amount=UInt64(payment.amount),
+    //     claimed=Bool(False)
+    // )
+    frame_dig -4
+    frame_dig -3
+    concat
+    frame_dig -2
+    concat
+    swap
+    concat
+    // smart_contracts/ff/contract.py:310
+    // claimed=Bool(False)
+    bytec_2 // 0x00
+    // smart_contracts/ff/contract.py:305-311
+    // self.futureFunds[idx] = FutureFund(
+    //     primary=primary,
+    //     backup=backup,
+    //     unlock_time=unlock_time,
+    //     amount=UInt64(payment.amount),
+    //     claimed=Bool(False)
+    // )
+    concat
+    // smart_contracts/ff/contract.py:305
+    // self.futureFunds[idx] = FutureFund(
+    bytec 10 // "futureFund_"
+    dig 2
+    concat
+    // smart_contracts/ff/contract.py:305-311
+    // self.futureFunds[idx] = FutureFund(
+    //     primary=primary,
+    //     backup=backup,
+    //     unlock_time=unlock_time,
+    //     amount=UInt64(payment.amount),
+    //     claimed=Bool(False)
+    // )
+    swap
+    box_put
+    // smart_contracts/ff/contract.py:312
+    // self.no_of_future_funds.value = UInt64(idx.native + 1)
+    btoi
+    intc_0 // 1
+    +
+    itob
+    bytec 5 // "noOfFutureFunds"
+    swap
+    app_global_put
+    retsub
+
+
+// smart_contracts.ff.contract.ProposalContract.claim_future_self(fund_id: bytes) -> void:
+claim_future_self:
+    // smart_contracts/ff/contract.py:315-316
+    // @abimethod()
+    // def claim_future_self(self, fund_id: UInt64) -> None:
+    proto 1 0
+    // smart_contracts/ff/contract.py:317
+    // assert fund_id in self.futureFunds, "Fund does not exist"
+    bytec 10 // "futureFund_"
+    frame_dig -1
+    concat
+    dupn 2
+    box_len
+    bury 1
+    assert // Fund does not exist
+    // smart_contracts/ff/contract.py:318
+    // fund = self.futureFunds[fund_id].copy()
+    box_get
+    swap
+    dup
+    uncover 2
+    assert // check self.futureFunds entry exists
+    // smart_contracts/ff/contract.py:320
+    // assert not fund.claimed, "Already claimed"
+    dup
+    pushint 640 // 640
+    getbit
+    bytec_2 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_2 // 0x00
+    ==
+    assert // Already claimed
+    // smart_contracts/ff/contract.py:321
+    // assert Global.latest_timestamp >= fund.unlock_time.native, "Too early to claim"
+    global LatestTimestamp
+    dig 1
+    pushint 64 // 64
+    extract_uint64
+    >=
+    assert // Too early to claim
+    // smart_contracts/ff/contract.py:322
+    // assert Txn.sender == fund.primary or Txn.sender == fund.backup, "Not authorized"
+    extract 0 32 // on error: Index access is out of bounds
+    txn Sender
+    ==
+    bnz claim_future_self_bool_true@2
+    frame_dig 1
+    extract 32 32 // on error: Index access is out of bounds
+    txn Sender
+    ==
+    bz claim_future_self_bool_false@3
+
+claim_future_self_bool_true@2:
+    intc_0 // 1
+
+claim_future_self_bool_merge@4:
+    // smart_contracts/ff/contract.py:322
+    // assert Txn.sender == fund.primary or Txn.sender == fund.backup, "Not authorized"
+    assert // Not authorized
+    // smart_contracts/ff/contract.py:324-328
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=Txn.sender,
+    //     amount=fund.amount.native
+    // ).submit()
+    itxn_begin
+    // smart_contracts/ff/contract.py:325
+    // sender=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/ff/contract.py:326
+    // receiver=Txn.sender,
+    txn Sender
+    // smart_contracts/ff/contract.py:327
+    // amount=fund.amount.native
+    frame_dig 1
+    dup
+    cover 3
+    pushint 72 // 72
+    extract_uint64
+    itxn_field Amount
+    itxn_field Receiver
+    itxn_field Sender
+    // smart_contracts/ff/contract.py:324
+    // itxn.Payment(
+    intc_0 // pay
+    itxn_field TypeEnum
+    intc_1 // 0
+    itxn_field Fee
+    // smart_contracts/ff/contract.py:324-328
+    // itxn.Payment(
+    //     sender=Global.current_application_address,
+    //     receiver=Txn.sender,
+    //     amount=fund.amount.native
+    // ).submit()
+    itxn_submit
+    // smart_contracts/ff/contract.py:330
+    // fund.claimed = Bool(True)
+    pushint 640 // 640
+    intc_0 // 1
+    setbit
+    // smart_contracts/ff/contract.py:331
+    // self.futureFunds[fund_id] = fund.copy()
+    frame_dig 0
+    swap
+    box_put
+    retsub
+
+claim_future_self_bool_false@3:
+    intc_1 // 0
+    b claim_future_self_bool_merge@4

@@ -1,0 +1,68 @@
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# Node
+node_modules/
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+package-lock.json
+yarn.lock
+
+# Build output
+dist/
+build/
+.vite/
+
+# Frontend artifacts
+projects/safestake-frontend/dist/
+projects/safestake-frontend/package-lock.json
+projects/safestake-frontend/.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.pyre/
+.pytype/
+.mypy_cache/
+.venv/
+env/
+venv/
+ENV/
+venv.bak/
+
+# Local tool config
+.algokit/
+projects/safestake-contracts/.algokit/
+
+# Local IDE / workspace files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+ff.code-workspace
+
+# Logs and temporary files
+deploy_output.txt
+copy_files.ps1
+inject_content/
+*.log
+
+# Contract project local artifacts
+projects/safestake-contracts/.venv/
+projects/safestake-contracts/.vscode/
+projects/safestake-contracts/deployment_log*.txt
+projects/safestake-contracts/.tours/
+

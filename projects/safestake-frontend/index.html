@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe Stake - Blockchain Crowdfunding Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Chatbot UI Start -->
+    <!-- Floating toggle button -->
+    <button id="chatbot-toggle" aria-label="Open chat" style="position: fixed; bottom: 20px; right: 30px; width: 56px; height: 56px; border-radius: 9999px; background: #2563eb; color: white; border: none; cursor: pointer; box-shadow: 0 6px 18px rgba(37,99,235,0.25); z-index: 1000;">Chat</button>
+
+    <!-- Chat panel (hidden by default) -->
+    <div id="chatbot-panel" style="display:none; position: fixed; bottom: 90px; right: 30px; width: 340px; max-width: calc(100% - 48px); background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 0; font-family: Inter, Arial, sans-serif; z-index: 1000; overflow: hidden;">
+      <div style="display:flex; align-items:center; justify-content:space-between; padding: 10px 12px; background: #f3f4f6; border-bottom: 1px solid #e5e7eb;">
+  <strong style="font-size:14px;">Safe Stake Assistant</strong>
+        <button id="chatbot-close" aria-label="Close chat" style="background:transparent;border:none;font-size:18px;cursor:pointer;">✕</button>
+      </div>
+      <div id="chatbot-messages" style="height:260px; overflow-y:auto; padding: 10px; font-size: 14px; color: #111827; background: #ffffff;"></div>
+      <form id="chatbot-form" style="display:flex; gap:8px; padding:10px; border-top:1px solid #e5e7eb; background:#fff;">
+  <input type="text" id="chatbot-input" placeholder="Ask me about Safe Stake..." style="flex:1; padding:8px 10px; border:1px solid #e5e7eb; border-radius:6px;" autocomplete="off" />
+        <button type="submit" style="padding:8px 12px; background:#2563eb; color:white; border:none; border-radius:6px; cursor:pointer;">Send</button>
+      </form>
+    </div>
+
+    <script>
+      (function(){
+        const TOGGLE_ID = 'chatbot-toggle';
+        const PANEL_ID = 'chatbot-panel';
+        const CLOSE_ID = 'chatbot-close';
+        const FORM_ID = 'chatbot-form';
+        const INPUT_ID = 'chatbot-input';
+        const MSGS_ID = 'chatbot-messages';
+  const STORAGE_KEY = 'safestake_chat_messages';
+  const OPEN_KEY = 'safestake_chat_open';
+
+        const toggle = document.getElementById(TOGGLE_ID);
+        const panel = document.getElementById(PANEL_ID);
+        const closeBtn = document.getElementById(CLOSE_ID);
+        const form = document.getElementById(FORM_ID);
+        const input = document.getElementById(INPUT_ID);
+        const messagesEl = document.getElementById(MSGS_ID);
+
+        let messages = [];
+
+        function loadState(){
+          try{
+            const raw = localStorage.getItem(STORAGE_KEY);
+            messages = raw ? JSON.parse(raw) : [];
+          }catch(e){ messages = []; }
+        }
+
+        function saveMessages(){
+          try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(messages)); }catch(e){}
+        }
+
+        function saveOpen(isOpen){
+          try{ localStorage.setItem(OPEN_KEY, isOpen ? 'true' : 'false'); }catch(e){}
+        }
+
+        function renderMessages(){
+          messagesEl.innerHTML = '';
+          for(const m of messages){
+            const div = document.createElement('div');
+            div.style.margin = '6px 0';
+            if(m.sender === 'user'){
+              div.innerHTML = `<div style="text-align:right"><small style=\"color:#6b7280\">You</small><div style=\"display:inline-block; background:#e0f2fe; color:#04223a; padding:8px;border-radius:8px; max-width:80%\">${escapeHtml(m.text)}</div></div>`;
+            } else {
+              div.innerHTML = `<div style=\"text-align:left\"><small style=\"color:#6b7280\">Bot</small><div style=\"display:inline-block; background:#f3f4f6; color:#111827; padding:8px;border-radius:8px; max-width:80%\">${escapeHtml(m.text)}</div></div>`;
+            }
+            messagesEl.appendChild(div);
+          }
+          messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function escapeHtml(s){
+          return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        }
+
+        function openPanel(){
+          panel.style.display = 'block';
+          toggle.style.display = 'none';
+          saveOpen(true);
+          renderMessages();
+          input.focus();
+        }
+
+        function closePanel(){
+          panel.style.display = 'none';
+          toggle.style.display = 'inline-block';
+          saveOpen(false);
+        }
+
+        // init
+        loadState();
+        const wasOpen = localStorage.getItem(OPEN_KEY) === 'true';
+        if(wasOpen){ openPanel(); } else { closePanel(); }
+
+        toggle.addEventListener('click', (e)=>{ openPanel(); });
+        closeBtn.addEventListener('click', (e)=>{ closePanel(); });
+
+        form.addEventListener('submit', async (e)=>{
+          e.preventDefault();
+          const question = input.value.trim();
+          if(!question) return;
+          messages.push({ sender:'user', text: question });
+          saveMessages(); renderMessages(); input.value = '';
+
+          try{
+            const res = await fetch('/api/chatbot', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question })
+            });
+            if(!res.ok) throw new Error('Request failed: ' + res.status);
+            const data = await res.json();
+            const answer = (data && (data.answer || data.message)) || 'I could not find an answer.';
+            messages.push({ sender:'bot', text: answer });
+            saveMessages(); renderMessages();
+          }catch(err){
+            console.error('Chatbot request error:', err);
+            messages.push({ sender:'bot', text: 'Sorry, I am unavailable right now. Please try again later.' });
+            saveMessages(); renderMessages();
+          }
+        });
+
+      })();
+    </script>
+    <!-- Chatbot UI End -->
+  </body>
+</html>
