@@ -119,29 +119,3 @@ Refunds proportional donation amounts if project is inactive for 3 months.
    proposal_contract.claim_milestone(0)
    ```
 
-## Deployment Instructions
-
-1. Compile the contract using AlgoPy:
-   ```
-   python -m algopy compile proposal_contract.py
-   ```
-
-2. Deploy to Algorand testnet or mainnet:
-   ```
-   python -m algopy deploy proposal_contract.py --network testnet
-   ```
-
-## Security Considerations
-
-- All milestone funds are held in escrow by the smart contract until milestone approval
-- Voting weights prevent "Sybil attacks" by requiring donations to have influence
-- Time-limited milestone submissions prevent indefinite fund locking
-- The refund mechanism protects donors if projects are abandoned
-
-## License
-
-MIT License
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
